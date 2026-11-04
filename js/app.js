@@ -62,10 +62,20 @@ function renderTaskItem(task) {
   const dateEl = createElement("span", { className: "task-item__date", text: task.date });
   const body = createElement("div", { className: "task-item__body" }, [titleEl, dateEl]);
 
+  const deleteButton = createElement("button", {
+    className: "btn btn--small btn--accent",
+    text: "Удалить",
+    on: {
+      click: () => updateTasks(deleteTask(tasks, task.id))
+    }
+  });
+
+  const actions = createElement("div", { className: "task-item__actions" }, [deleteButton]);
+
   return createElement(
     "li",
     { className: `task-item${task.completed ? " task-item--completed" : ""}` },
-    [checkbox, body]
+    [checkbox, body, actions]
   );
 }
 

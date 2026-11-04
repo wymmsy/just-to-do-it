@@ -164,3 +164,9 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
+
+.task-item__actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
