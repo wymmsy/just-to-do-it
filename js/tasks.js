@@ -11,3 +11,9 @@ function addTask(tasks, title, date) {
 function deleteTask(tasks, id) {
   return tasks.filter((task) => task.id !== id);
 }
+
+function editTask(tasks, id, title, date) {
+  return tasks.map((task) =>
+    task.id === id ? { ...task, title: title.trim(), date } : task
+  );
+}

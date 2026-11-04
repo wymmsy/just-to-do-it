@@ -170,3 +170,18 @@ body {
   gap: 6px;
   flex-shrink: 0;
 }
+
+.task-item__edit-row {
+  flex: 1 1 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.task-item__edit-input {
+  flex: 1 1 140px;
+  padding: 8px 10px;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: 14px;
+}
