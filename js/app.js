@@ -12,6 +12,45 @@ function renderHeader() {
   return createElement("header", { className: "app-header" }, [logo, title]);
 }
 
+function updateTasks(nextTasks) {
+  tasks = nextTasks;
+  saveTasks(tasks);
+  render();
+}
+
+function renderTaskForm() {
+  const titleInput = createElement("input", {
+    className: "task-form__input",
+    attrs: { type: "text", placeholder: "Новая задача", required: "" }
+  });
+
+  const dateInput = createElement("input", {
+    className: "task-form__input",
+    attrs: { type: "date" }
+  });
+
+  const submitButton = createElement("button", {
+    className: "btn btn--primary",
+    text: "Добавить",
+    attrs: { type: "submit" }
+  });
+
+  return createElement(
+    "form",
+    {
+      className: "task-form",
+      on: {
+        submit: (event) => {
+          event.preventDefault();
+          if (!titleInput.value.trim()) return;
+          updateTasks(addTask(tasks, titleInput.value, dateInput.value));
+        }
+      }
+    },
+    [titleInput, dateInput, submitButton]
+  );
+}
+
 function renderTaskItem(task) {
   const checkbox = createElement("input", {
     className: "task-item__checkbox",
@@ -39,7 +78,10 @@ function render() {
   const app = document.getElementById("app");
   clearElement(app);
 
-  const container = createElement("div", { className: "container" }, [renderTaskList(tasks)]);
+  const container = createElement("div", { className: "container" }, [
+    renderTaskForm(),
+    renderTaskList(tasks)
+  ]);
 
   app.appendChild(renderHeader());
   app.appendChild(container);
