@@ -59,7 +59,10 @@ function renderTaskItem(task) {
 
   const checkbox = createElement("input", {
     className: "task-item__checkbox",
-    attrs: { type: "checkbox", disabled: "" }
+    attrs: { type: "checkbox" },
+    on: {
+      change: () => updateTasks(toggleTaskCompleted(tasks, task.id))
+    }
   });
   checkbox.checked = task.completed;
 

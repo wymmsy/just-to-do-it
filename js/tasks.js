@@ -17,3 +17,9 @@ function editTask(tasks, id, title, date) {
     task.id === id ? { ...task, title: title.trim(), date } : task
   );
 }
+
+function toggleTaskCompleted(tasks, id) {
+  return tasks.map((task) =>
+    task.id === id ? { ...task, completed: !task.completed } : task
+  );
+}
