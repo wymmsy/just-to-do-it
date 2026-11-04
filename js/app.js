@@ -145,6 +145,10 @@ function renderTaskEditItem(task) {
 }
 
 function renderTaskList(list) {
+  if (list.length === 0) {
+    return createElement("p", { className: "empty-state", text: "Задач не найдено" });
+  }
+
   const items = list.map(renderTaskItem);
   return createElement("ul", { className: "task-list" }, items);
 }
