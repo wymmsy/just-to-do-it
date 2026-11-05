@@ -30,3 +30,9 @@ function sortTasksByDate(tasks, direction) {
     return direction === "desc" ? -diff : diff;
   });
 }
+
+function filterTasksByStatus(tasks, status) {
+  if (status === "active") return tasks.filter((task) => !task.completed);
+  if (status === "completed") return tasks.filter((task) => task.completed);
+  return tasks;
+}

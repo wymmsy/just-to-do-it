@@ -1,9 +1,14 @@
 let tasks = loadTasks();
 let editingTaskId = null;
 let currentSortDirection = null;
+let currentFilter = "all";
 
 function getVisibleTasks() {
-  return currentSortDirection ? sortTasksByDate(tasks, currentSortDirection) : tasks;
+  let result = filterTasksByStatus(tasks, currentFilter);
+  if (currentSortDirection) {
+    result = sortTasksByDate(result, currentSortDirection);
+  }
+  return result;
 }
 
 function renderHeader() {
@@ -25,6 +30,22 @@ function updateTasks(nextTasks) {
 }
 
 function renderControls() {
+  const statuses = ["all", "active", "completed"];
+  const statusLabels = { all: "Все", active: "Активные", completed: "Выполненные" };
+
+  const filterButtons = statuses.map((status) =>
+    createElement("button", {
+      className: `btn btn--small${currentFilter === status ? " btn--active" : ""}`,
+      text: statusLabels[status],
+      on: {
+        click: () => {
+          currentFilter = status;
+          render();
+        }
+      }
+    })
+  );
+
   const sortButton = createElement("button", {
     className: "btn btn--small",
     text: currentSortDirection === "desc" ? "Дата ↓" : "Дата ↑",
@@ -36,7 +57,10 @@ function renderControls() {
     }
   });
 
-  const filtersWrap = createElement("div", { className: "controls__filters" }, [sortButton]);
+  const filtersWrap = createElement("div", { className: "controls__filters" }, [
+    ...filterButtons,
+    sortButton
+  ]);
 
   return createElement("div", { className: "controls" }, [filtersWrap]);
 }
