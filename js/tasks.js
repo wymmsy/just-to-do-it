@@ -23,3 +23,10 @@ function toggleTaskCompleted(tasks, id) {
     task.id === id ? { ...task, completed: !task.completed } : task
   );
 }
+
+function sortTasksByDate(tasks, direction) {
+  return [...tasks].sort((a, b) => {
+    const diff = new Date(a.date) - new Date(b.date);
+    return direction === "desc" ? -diff : diff;
+  });
+}

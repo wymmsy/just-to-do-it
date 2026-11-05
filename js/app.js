@@ -1,5 +1,10 @@
 let tasks = loadTasks();
 let editingTaskId = null;
+let currentSortDirection = null;
+
+function getVisibleTasks() {
+  return currentSortDirection ? sortTasksByDate(tasks, currentSortDirection) : tasks;
+}
 
 function renderHeader() {
   const logo = createElement("img", {
@@ -17,6 +22,23 @@ function updateTasks(nextTasks) {
   tasks = nextTasks;
   saveTasks(tasks);
   render();
+}
+
+function renderControls() {
+  const sortButton = createElement("button", {
+    className: "btn btn--small",
+    text: currentSortDirection === "desc" ? "Дата ↓" : "Дата ↑",
+    on: {
+      click: () => {
+        currentSortDirection = currentSortDirection === "asc" ? "desc" : "asc";
+        render();
+      }
+    }
+  });
+
+  const filtersWrap = createElement("div", { className: "controls__filters" }, [sortButton]);
+
+  return createElement("div", { className: "controls" }, [filtersWrap]);
 }
 
 function renderTaskForm() {
@@ -158,8 +180,9 @@ function render() {
   clearElement(app);
 
   const container = createElement("div", { className: "container" }, [
+    renderControls(),
     renderTaskForm(),
-    renderTaskList(tasks)
+    renderTaskList(getVisibleTasks())
   ]);
 
   app.appendChild(renderHeader());

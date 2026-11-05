@@ -96,6 +96,19 @@ body {
   font-size: 11px;
 }
 
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap);
+  margin-bottom: var(--gap);
+}
+
+.controls__filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .task-form {
   display: grid;
   grid-template-columns: 1fr;
