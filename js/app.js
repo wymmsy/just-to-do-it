@@ -2,9 +2,11 @@ let tasks = loadTasks();
 let editingTaskId = null;
 let currentSortDirection = null;
 let currentFilter = "all";
+let currentSearch = "";
 
 function getVisibleTasks() {
-  let result = filterTasksByStatus(tasks, currentFilter);
+  let result = searchTasksByTitle(tasks, currentSearch);
+  result = filterTasksByStatus(result, currentFilter);
   if (currentSortDirection) {
     result = sortTasksByDate(result, currentSortDirection);
   }
@@ -30,6 +32,18 @@ function updateTasks(nextTasks) {
 }
 
 function renderControls() {
+  const searchInput = createElement("input", {
+    className: "controls__search",
+    attrs: { type: "text", placeholder: "Поиск задач", value: currentSearch },
+    on: {
+      keydown: (event) => {
+        if (event.key !== "Enter") return;
+        currentSearch = event.target.value;
+        render();
+      }
+    }
+  });
+
   const statuses = ["all", "active", "completed"];
   const statusLabels = { all: "Все", active: "Активные", completed: "Выполненные" };
 
@@ -62,7 +76,7 @@ function renderControls() {
     sortButton
   ]);
 
-  return createElement("div", { className: "controls" }, [filtersWrap]);
+  return createElement("div", { className: "controls" }, [searchInput, filtersWrap]);
 }
 
 function renderTaskForm() {

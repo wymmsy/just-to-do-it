@@ -36,3 +36,9 @@ function filterTasksByStatus(tasks, status) {
   if (status === "completed") return tasks.filter((task) => task.completed);
   return tasks;
 }
+
+function searchTasksByTitle(tasks, query) {
+  const normalized = query.trim().toLowerCase();
+  if (!normalized) return tasks;
+  return tasks.filter((task) => task.title.toLowerCase().includes(normalized));
+}

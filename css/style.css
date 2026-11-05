@@ -103,6 +103,14 @@ body {
   margin-bottom: var(--gap);
 }
 
+.controls__search {
+  flex: 1 1 200px;
+  padding: 10px 14px;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: 15px;
+}
+
 .controls__filters {
   display: flex;
   gap: 8px;
