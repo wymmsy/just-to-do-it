@@ -3,6 +3,7 @@ let editingTaskId = null;
 let currentSortDirection = null;
 let currentFilter = "all";
 let currentSearch = "";
+let draggedTaskId = null;
 
 function getVisibleTasks() {
   let result = searchTasksByTitle(tasks, currentSearch);
@@ -156,7 +157,25 @@ function renderTaskItem(task) {
 
   return createElement(
     "li",
-    { className: `task-item${task.completed ? " task-item--completed" : ""}` },
+    {
+      className: `task-item${task.completed ? " task-item--completed" : ""}`,
+      attrs: { draggable: "true", "data-id": String(task.id) },
+      on: {
+        dragstart: (event) => {
+          draggedTaskId = task.id;
+          event.currentTarget.classList.add("task-item--dragging");
+        },
+        dragend: (event) => {
+          event.currentTarget.classList.remove("task-item--dragging");
+        },
+        dragover: (event) => event.preventDefault(),
+        drop: () => {
+          if (draggedTaskId === null) return;
+          updateTasks(reorderTasks(tasks, draggedTaskId, task.id));
+          draggedTaskId = null;
+        }
+      }
+    },
     [checkbox, body, actions]
   );
 }

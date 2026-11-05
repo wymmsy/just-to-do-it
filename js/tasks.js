@@ -42,3 +42,16 @@ function searchTasksByTitle(tasks, query) {
   if (!normalized) return tasks;
   return tasks.filter((task) => task.title.toLowerCase().includes(normalized));
 }
+
+function reorderTasks(tasks, draggedId, targetId) {
+  if (draggedId === targetId) return tasks;
+
+  const fromIndex = tasks.findIndex((task) => task.id === draggedId);
+  const toIndex = tasks.findIndex((task) => task.id === targetId);
+  if (fromIndex === -1 || toIndex === -1) return tasks;
+
+  const updated = [...tasks];
+  const [moved] = updated.splice(fromIndex, 1);
+  updated.splice(toIndex, 0, moved);
+  return updated;
+}

@@ -159,6 +159,11 @@ body {
   border: 2px solid var(--color-border);
   border-radius: var(--radius);
   padding: 12px 14px;
+  cursor: grab;
+}
+
+.task-item--dragging {
+  opacity: 0.4;
 }
 
 .task-item--completed .task-item__title {
