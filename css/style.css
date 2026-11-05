@@ -166,6 +166,16 @@ body {
   opacity: 0.4;
 }
 
+.drop-indicator {
+  height: 3px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--color-accent);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
 .task-item--completed .task-item__title {
   text-decoration: line-through;
   color: var(--color-muted);
@@ -228,9 +238,23 @@ body {
   letter-spacing: 1px;
 }
 
-@media (min-width: 640px) {
-  .task-list {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-  }
+.day-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.day-group + .day-group {
+  margin-top: 24px;
+}
+
+.day-group__heading {
+  margin: 0;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--color-border);
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--color-text);
 }

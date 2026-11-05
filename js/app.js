@@ -4,6 +4,55 @@ let currentSortDirection = null;
 let currentFilter = "all";
 let currentSearch = "";
 let draggedTaskId = null;
+let dropTargetId = null;
+let dropPosition = null;
+let dropIndicatorEl = null;
+
+function showDropIndicator(targetEl, isAfter) {
+  if (!dropIndicatorEl) {
+    dropIndicatorEl = createElement("li", { className: "drop-indicator" });
+  }
+  const parent = targetEl.parentElement;
+  parent.insertBefore(dropIndicatorEl, isAfter ? targetEl.nextSibling : targetEl);
+}
+
+function clearDropState() {
+  draggedTaskId = null;
+  dropTargetId = null;
+  dropPosition = null;
+  if (dropIndicatorEl) {
+    if (dropIndicatorEl.parentElement) {
+      dropIndicatorEl.parentElement.removeChild(dropIndicatorEl);
+    }
+    dropIndicatorEl = null;
+  }
+}
+
+function handleListDragOver(event) {
+  event.preventDefault();
+  if (draggedTaskId === null) return;
+
+  const itemEl = event.target.closest(".task-item");
+  if (!itemEl) return;
+
+  const targetId = Number(itemEl.dataset.id);
+  if (!targetId || targetId === draggedTaskId) return;
+
+  const rect = itemEl.getBoundingClientRect();
+  const isAfter = event.clientY - rect.top > rect.height / 2;
+  dropTargetId = targetId;
+  dropPosition = isAfter ? "after" : "before";
+  showDropIndicator(itemEl, isAfter);
+}
+
+function handleListDrop(event) {
+  event.preventDefault();
+  if (draggedTaskId === null || dropTargetId === null) return;
+
+  const nextTasks = reorderTasks(tasks, draggedTaskId, dropTargetId, dropPosition);
+  clearDropState();
+  updateTasks(nextTasks);
+}
 
 function getVisibleTasks() {
   let result = searchTasksByTitle(tasks, currentSearch);
@@ -163,16 +212,12 @@ function renderTaskItem(task) {
       on: {
         dragstart: (event) => {
           draggedTaskId = task.id;
+          event.dataTransfer.setData("text/plain", String(task.id));
           event.currentTarget.classList.add("task-item--dragging");
         },
         dragend: (event) => {
           event.currentTarget.classList.remove("task-item--dragging");
-        },
-        dragover: (event) => event.preventDefault(),
-        drop: () => {
-          if (draggedTaskId === null) return;
-          updateTasks(reorderTasks(tasks, draggedTaskId, task.id));
-          draggedTaskId = null;
+          clearDropState();
         }
       }
     },
@@ -223,13 +268,43 @@ function renderTaskEditItem(task) {
   return createElement("li", { className: "task-item" }, [editRow]);
 }
 
+function groupTasksByDate(list) {
+  const groups = [];
+  const indexByDate = new Map();
+
+  list.forEach((task) => {
+    if (!indexByDate.has(task.date)) {
+      indexByDate.set(task.date, groups.length);
+      groups.push({ date: task.date, tasks: [] });
+    }
+    groups[indexByDate.get(task.date)].tasks.push(task);
+  });
+
+  return groups;
+}
+
 function renderTaskList(list) {
   if (list.length === 0) {
     return createElement("p", { className: "empty-state", text: "Задач не найдено" });
   }
 
-  const items = list.map(renderTaskItem);
-  return createElement("ul", { className: "task-list" }, items);
+  const groups = groupTasksByDate(list).map((group) => {
+    const heading = createElement("h2", { className: "day-group__heading", text: group.date });
+    const items = createElement(
+      "ul",
+      {
+        className: "task-list",
+        on: {
+          dragover: handleListDragOver,
+          drop: handleListDrop
+        }
+      },
+      group.tasks.map(renderTaskItem)
+    );
+    return createElement("div", { className: "day-group" }, [heading, items]);
+  });
+
+  return createElement("div", { className: "day-group-list" }, groups);
 }
 
 function render() {
