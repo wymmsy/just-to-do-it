@@ -307,9 +307,11 @@ function renderTaskList(list) {
   return createElement("div", { className: "day-group-list" }, groups);
 }
 
+const appRoot = createElement("div", { attrs: { id: "app" } });
+document.body.appendChild(appRoot);
+
 function render() {
-  const app = document.getElementById("app");
-  clearElement(app);
+  clearElement(appRoot);
 
   const container = createElement("div", { className: "container" }, [
     renderControls(),
@@ -317,8 +319,8 @@ function render() {
     renderTaskList(getVisibleTasks())
   ]);
 
-  app.appendChild(renderHeader());
-  app.appendChild(container);
+  appRoot.appendChild(renderHeader());
+  appRoot.appendChild(container);
 }
 
 render();
